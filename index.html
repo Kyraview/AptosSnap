@@ -25,17 +25,30 @@
     <br/>
 
     <button class="connect">Connect</button>
-    <button class="sendHello">Send Hello</button>
+    <button class="getAddress">getAddress</button>
+    <button class="fund">fund</button>
+    <button class="getBalance">getBalance</button>
+    <br/>
+    <input class="address" value="0xf5ad1b92c90e909b5ad149ade0e21a4cf423a77879c85acc60d00c8e50aaaabd" placeholder="address"/>
+    <input class="amount" type="number" placeholder="amount"/>
+    <Button class="transfer">transfer</Button>
+    
   </body>
 
   <script>
     const snapId = `local:${window.location.href}`;
 
     const connectButton = document.querySelector('button.connect')
-    const sendButton = document.querySelector('button.sendHello')
+    const getAddressButton = document.querySelector('button.getAddress')
+    const fundButton = document.querySelector('button.fund')
+    const getBalanceButton = document.querySelector('button.getBalance')
+    const transferButton = document.querySelector('button.transfer')
 
     connectButton.addEventListener('click', connect)
-    sendButton.addEventListener('click', send)
+    getAddressButton.addEventListener('click', getAddress)
+    fundButton.addEventListener('click', fund)
+    getBalanceButton.addEventListener('click', getBalance)
+    transferButton.addEventListener('click', transfer)
 
     // here we get permissions to interact with and install the snap
     async function connect () {
@@ -48,18 +61,62 @@
     }
 
     // here we call the snap's "hello" method
-    async function send () {
+    async function getAddress () {
       try {
-        await ethereum.request({
+        const out = await ethereum.request({
           method: 'wallet_invokeSnap',
           params: [snapId, {
-            method: 'hello'
+            method: 'getAddress'
           }]
         })
+        console.log(out);
       } catch (err) {
         console.error(err)
         alert('Problem happened: ' + err.message || err)
       }
+    }
+    async function fund() {
+      try {
+        const out = await ethereum.request({
+          method: 'wallet_invokeSnap',
+          params: [snapId, {
+            method: 'fund'
+          }]
+        })
+        console.log(out);
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+    async function getBalance() {
+      try {
+        const out = await ethereum.request({
+          method: 'wallet_invokeSnap',
+          params: [snapId, {
+            method: 'getBalance'
+          }]
+        })
+        console.log(out);
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+    async function transfer(){
+      let address = document.querySelector('input.address').value;
+      let amount = document.querySelector('input.amount').value;
+      const out = await ethereum.request({
+          method: 'wallet_invokeSnap',
+          params: [snapId, {
+            method: 'transfer',
+            params: {
+              to: address,
+              amount: amount
+            }
+          }]
+      })
+      console.log(out);
     }
   </script>
 </html>

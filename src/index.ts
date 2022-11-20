@@ -1,20 +1,36 @@
 import { OnRpcRequestHandler } from '@metamask/snap-types';
+import {AptosAccount, AptosClient, CoinClient, FaucetClient} from 'aptos'
+import { getAccount } from './Wallet/Accounts';
+import {transferParams} from './Utils/interfaces';
+import { HexString } from 'aptos';
+import { NetworkRequest } from './Utils/networkClient';
+import { WalletFuncs } from './Wallet/WalletFuncs';
 
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => {
+
+  const devNetFaucetUrl = "https://faucet.devnet.aptoslabs.com";
+  
+  
+
+  const userAccount = await getAccount(2);
+  const walletfunctions = new WalletFuncs(userAccount, "devnet")
+
   switch (request.method) {
-    case 'hello':
-      return wallet.request({
-        method: 'snap_confirm',
-        params: [
-          {
-            prompt: `Hello, ${origin}!`,
-            description:
-              'This custom confirmation is just for display purposes.',
-            textAreaContent:
-              'But you can edit the snap source code to make it do something, if you want to!',
-          },
-        ],
-      });
+    case 'getAddress':
+      return userAccount.address().toString();
+    case 'fund':
+      await fetch(devNetFaucetUrl+"/mint"+"?address="+HexString.ensure(userAccount.address().toString()).noPrefix()+"&amount=10000000", {method:"post"})
+      return true;
+    case 'getBalance':
+      return await walletfunctions.getAptosBalance()
+      
+    case 'transfer':
+      const params = request.params as unknown as transferParams;
+      let toAccount =  params.to
+      let Amount = BigInt(params.amount);
+      const output = await walletfunctions.transfer(toAccount, Amount);
+      return output
+      
     default:
       throw new Error('Method not found.');
   }

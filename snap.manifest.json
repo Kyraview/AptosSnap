@@ -1,13 +1,13 @@
 {
-  "version": "1.0.0",
-  "proposedName": "MetaMask TypeScript Template Snap\n",
-  "description": "An example Snap written in TypeScript.",
+  "version": "0.0.1",
+  "description": "Aptos on Metamask",
+  "proposedName": "Aptos",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/template-typescript-snap.git"
+    "url": "https://github.com/Kyraview/AptosSnap.git"
   },
   "source": {
-    "shasum": "ZW1yly4ughA3heTnFzWGUMdo0zc87pYqXw2IyqLGbTQ=",
+    "shasum": "Zp3mtsFyabw2yIScCH1Ij/zU6X7g6tck8WSAEOtiwX0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -18,7 +18,13 @@
     }
   },
   "initialPermissions": {
-    "snap_confirm": {}
+    "snap_confirm": {},
+    "endowment:network-access": {},
+    "snap_getBip44Entropy": [
+      {
+        "coinType": 637
+      }
+    ]
   },
   "manifestVersion": "0.1"
 }
