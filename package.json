@@ -1,11 +1,11 @@
 {
-  "name": "template-typescript-snap",
-  "version": "1.0.0",
+  "name": "meta-aptos",
+  "version": "0.0.1",
   "private": true,
-  "description": "The 'Hello, world!' of MetaMask Snaps, now written in TypeScript.",
+  "description": "An Aptos Wallet on Metamask",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/template-typescript-snap.git"
+    "url": "https://github.com/Kyraview/AptosSnap.git"
   },
   "license": "MIT",
   "main": "src/index.ts",

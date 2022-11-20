@@ -7,11 +7,11 @@
     "url": "https://github.com/Kyraview/AptosSnap.git"
   },
   "source": {
-    "shasum": "Zp3mtsFyabw2yIScCH1Ij/zU6X7g6tck8WSAEOtiwX0=",
+    "shasum": "sz194T4pnA4tfBpdnUtm2HAg6IUuhADsZFEhUpNtREw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "packageName": "template-typescript-snap",
+        "packageName": "meta-aptos",
         "registry": "https://registry.npmjs.org/",
         "iconPath": "images/icon.svg"
       }

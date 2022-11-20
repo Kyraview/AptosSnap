@@ -1,4 +1,4 @@
-export interface transferParams{
-    to: string,
-    amount: string | number
-}
+export type transferParams = {
+  to: string;
+  amount: string | number;
+};

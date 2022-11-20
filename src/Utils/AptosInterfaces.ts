@@ -1,11 +1,10 @@
-
-
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-import { Deserializer } from "../bsc/Deserializer";
-import { Serializer } from "../bsc/Serializer";
-import { Bytes } from "../bsc/types";
+import { Deserializer } from '../bsc/Deserializer';
+import { Serializer } from '../bsc/Serializer';
+import { Bytes } from '../bsc/types';
+
 export class Ed25519PublicKey {
   static readonly LENGTH: number = 32;
 
@@ -13,7 +12,9 @@ export class Ed25519PublicKey {
 
   constructor(value: Bytes) {
     if (value.length !== Ed25519PublicKey.LENGTH) {
-      throw new Error(`Ed25519PublicKey length should be ${Ed25519PublicKey.LENGTH}`);
+      throw new Error(
+        `Ed25519PublicKey length should be ${Ed25519PublicKey.LENGTH}`,
+      );
     }
     this.value = value;
   }
@@ -37,7 +38,9 @@ export class Ed25519Signature {
 
   constructor(public readonly value: Bytes) {
     if (value.length !== Ed25519Signature.LENGTH) {
-      throw new Error(`Ed25519Signature length should be ${Ed25519Signature.LENGTH}`);
+      throw new Error(
+        `Ed25519Signature length should be ${Ed25519Signature.LENGTH}`,
+      );
     }
   }
 
