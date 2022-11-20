@@ -1,7 +1,6 @@
 {
   "name": "meta-aptos",
   "version": "0.0.1",
-  "private": true,
   "description": "An Aptos Wallet on Metamask",
   "repository": {
     "type": "git",
