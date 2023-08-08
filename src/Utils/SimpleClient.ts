@@ -29,6 +29,8 @@ export class SimpleClient {
     return BigInt(sequenceNumber);
   }
 
+  async 
+
   async getGasEstimate(priority?: 'low' | 'avg' | 'high'): Promise<bigint> {
     const backString = '/estimate_gas_price';
     let key;
@@ -59,6 +61,14 @@ export class SimpleClient {
         `${this.baseURL}/accounts/${address}/resource/${coin}`,
       )
     ).data.coin.value;
+  }
+
+
+  //returns in the form {bytecode: 0x..., abi: json}
+  async getModule(address, name){
+    return (
+      await NetworkRequest.get(`${this.baseURL}/accounts/${address}/module/${name}`)
+    )
   }
 
   async postTxn(txn: Uint8Array) {

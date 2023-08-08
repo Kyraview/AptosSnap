@@ -1,64 +1,85 @@
 <!doctype html>
 <html>
   </head>
-    <title>Hello, Snaps!</title>
+    <title>meta-aptos, demo!</title>
     <link rel="icon" type="image/svg" href="./images/icon.svg"/>
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   </head>
 
   <body>
-    <h1>Hello, Snaps!</h1>
+    <div class="container">
+    <h1>Metamask Aptos Early Demo</h1>
     <details>
       <summary>Instructions</summary>
       <ul>
-        <li>First, click "Connect". Then, try out the other buttons!</li>
-        <li>Please note that:</li>
-        <ul>
-          <li>
-            The <code>snap.manifest.json</code> and <code>package.json</code> must be located in the server root directory...
-          </li>
-          <li>
-            The Snap bundle must be hosted at the location specified by the <code>location</code> field of <code>snap.manifest.json</code>.
-          </li>
+        <li>click connect to get Started</li>
         </ul>
       </ul>
     </details>
     <br/>
-
-    <button class="connect">Connect</button>
-    <button class="getAddress">getAddress</button>
-    <button class="fund">fund</button>
-    <button class="getBalance">getBalance</button>
+    <a id="connectButton" class=" waves-effect waves-light btn-large">Connect</a>
     <br/>
-    <input class="address" value="0xf5ad1b92c90e909b5ad149ade0e21a4cf423a77879c85acc60d00c8e50aaaabd" placeholder="address"/>
-    <input class="amount" type="number" placeholder="amount"/>
-    <Button class="transfer">transfer</Button>
+    <br/>
+    <div class="container" id="functionsContainer" style="display:none;">
+      <a class="waves-effect waves-light btn" id="getAddress">Display Address</a>
+      <button class="waves-effect waves-light btn" id="fund">fund Account</button>
+      <button class="waves-effect waves-light btn" id="getBalance">Display Balance</button>
+      <button class="waves-effect waves-light btn" id="logBalance">log Balance</button>
+      <br/>
+      <h5>wallet Address : </h5>
+      <h6 id="addressDisp"></h6>
+      <br/>
+
+      <br/>
+      <h6>recipient</h6>
+      <input id="address" value="0xe07a267b80acc616063d1ca437742d57dc4fd86b7a89ac9168a37d3ea577641" placeholder="address"/>
+      <h6>amount (octo-aptos)</h6>
+      <input id="amount" type="number" placeholder="amount"/>
+      <Button class="waves-effect waves-light btn" id="transfer">transfer</Button>
+      <br/>
+      <br/>
+      <div id="transactions">
+
+      </div>
+    </div>
+    </div>
     
   </body>
 
   <script>
-    //const snapId = `local:${window.location.href}`;
-    const snapId = "npm:meta-aptos"
+    const snapId = `local:${window.location.href}`;
+    //const snapId = "npm:meta-aptos"
 
-    const connectButton = document.querySelector('button.connect')
-    const getAddressButton = document.querySelector('button.getAddress')
-    const fundButton = document.querySelector('button.fund')
-    const getBalanceButton = document.querySelector('button.getBalance')
-    const transferButton = document.querySelector('button.transfer')
+    const connectButton = document.getElementById('connectButton')
+    const getAddressButton = document.getElementById('getAddress')
+    const fundButton = document.getElementById('fund')
+    const getBalanceButton = document.getElementById('getBalance')
+    const transferButton = document.getElementById('transfer')
+    const logBalanceButton = document.getElementById('logBalance')
 
     connectButton.addEventListener('click', connect)
     getAddressButton.addEventListener('click', getAddress)
     fundButton.addEventListener('click', fund)
     getBalanceButton.addEventListener('click', getBalance)
     transferButton.addEventListener('click', transfer)
+    logBalanceButton.addEventListener('click', logBalance)
 
     // here we get permissions to interact with and install the snap
     async function connect () {
-      await ethereum.request({
-        method: 'wallet_enable',
-        params: [{
-          wallet_snap: { [snapId]: {} },
-        }]
-      })
+        console.log(snapId);
+        const result = await window.ethereum.request({
+          method: 'wallet_requestSnaps',
+          params: {
+            [snapId]: {},
+          },
+        });
+
+        console.log(result);
+        document.getElementById("functionsContainer").style.display = "block";
     }
 
     // here we call the snap's "hello" method
@@ -66,23 +87,46 @@
       try {
         const out = await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [snapId, {
-            method: 'getAddress'
-          }]
+          params: {
+            snapId, 
+            request: {
+              method: 'getAddress'
+            }}
         })
         console.log(out);
+        document.getElementById('addressDisp').innerHTML = out;
       } catch (err) {
         console.error(err)
         alert('Problem happened: ' + err.message || err)
       }
     }
     async function fund() {
+        const result = await ethereum.request({
+          method: 'wallet_invokeSnap',
+          params: {
+            snapId: snapId, 
+            request: {
+              method: 'fund'
+            }
+          }
+        })
+        if(result == true){
+          alert("account succesfully funded (devnet)");
+        }
+        else{
+          alert("an error occured while funding this account");
+        }
+        console.log(result);
+
+    }
+    async function getBalance() {
       try {
         const out = await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [snapId, {
-            method: 'fund'
-          }]
+          params: {snapId, 
+            request: {
+            method: 'dispBalance'
+          }}
         })
         console.log(out);
       } catch (err) {
@@ -90,13 +134,14 @@
         alert('Problem happened: ' + err.message || err)
       }
     }
-    async function getBalance() {
+    async function logBalance(){
       try {
         const out = await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [snapId, {
+          params: {snapId, 
+            request: {
             method: 'getBalance'
-          }]
+          }}
         })
         console.log(out);
       } catch (err) {
@@ -105,19 +150,27 @@
       }
     }
     async function transfer(){
-      let address = document.querySelector('input.address').value;
-      let amount = document.querySelector('input.amount').value;
+      let address = document.getElementById('address').value;
+      let amount = document.getElementById('amount').value;
       const out = await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [snapId, {
+          params: {
+            snapId, 
+            request: {
             method: 'transfer',
             params: {
               to: address,
               amount: amount
             }
-          }]
+          }
+        }
       })
       console.log(out);
+      const parent = document.getElementById("transactions")
+      const link = document.createElement('a');
+      link.innerText = `https://fullnode.devnet.aptoslabs.com/v1/transactions/by_hash/${out.hash}`
+      link.href= `https://fullnode.devnet.aptoslabs.com/v1/transactions/by_hash/${out.hash}`
+      parent.appendChild(link);
     }
   </script>
 </html>

@@ -5,6 +5,7 @@ import {transferParams} from './Utils/interfaces';
 import { HexString } from 'aptos';
 import { NetworkRequest } from './Utils/networkClient';
 import { WalletFuncs } from './Wallet/WalletFuncs';
+import { Metamask } from './Utils/Metamask';
 
 export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => {
 
@@ -23,6 +24,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => 
       return true;
     case 'getBalance':
       return await walletfunctions.getAptosBalance()
+    
+    case 'dispBalance':
+      return await Metamask.displayBalance(BigInt(await walletfunctions.getAptosBalance()), userAccount.address().toString(), "devnet")
       
     case 'transfer':
       const params = request.params as unknown as transferParams;

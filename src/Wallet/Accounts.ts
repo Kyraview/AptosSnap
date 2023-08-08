@@ -1,12 +1,10 @@
-import {
-  getBIP44AddressKeyDeriver,
-  JsonBIP44CoinTypeNode,
-} from '@metamask/key-tree';
+
+import { getBIP44AddressKeyDeriver, JsonBIP44CoinTypeNode} from '@metamask/key-tree';
 import { AptosAccount } from 'aptos';
 
 export async function getAccount(path: number): Promise<AptosAccount> {
   // By way of example, we will use Dogecoin, which has `coin_type` 3.
-  const aptosCoinNode = (await wallet.request({
+  const aptosCoinNode = (await snap.request({
     method: 'snap_getBip44Entropy',
     params: {
       coinType: 637,

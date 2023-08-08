@@ -44,18 +44,14 @@ export class WalletFuncs {
   }
 
   async transfer(address: string, amount: bigint | string | number) {
-    amount = BigInt(amount);
+    const amount_bigint : bigint = BigInt(amount);
     console.log('here');
-    const confirm = await Metamask.sendConfirmation(
-      'send Transaction?',
-      this.network,
-      `Would you like to send ${amount.toString()} to address`,
-    );
+    const confirm = await Metamask.paymentConfirmation(amount_bigint, address, "devnet");
     if (!confirm) {
       return Metamask.throwError(4300, 'user rejected request');
     }
     console.log('passed confirm');
-    const payload = TransactionCreator.buildTransferPayload(address, amount);
+    const payload = TransactionCreator.buildTransferPayload(address, amount_bigint);
     console.log('passed payload creation');
     const rawTransferTxn = await this.txnCreator.buildRawTransactionFromPayload(
       this.account,

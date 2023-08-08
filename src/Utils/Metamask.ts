@@ -3,6 +3,7 @@ Class for utility functions
 
 wallet is a global in the metamask context
 */
+import { panel, text, heading, divider, copyable } from '@metamask/snaps-ui';
 export class Metamask {
   static throwError(code, msg) {
     if (code === undefined) {
@@ -14,65 +15,91 @@ export class Metamask {
     throw new Error(`${code}\n${msg}`);
   }
 
-  static async notify(message: string): Promise<boolean> {
-    try {
-      await wallet.request({
-        method: 'snap_notify',
-        params: [
-          {
-            type: 'inApp',
-            message,
-          },
-        ],
-      });
-
-      const result = await wallet.request({
-        method: 'snap_notify',
-        params: [
-          {
-            type: 'native',
-            message,
-          },
-        ],
-      });
-      console.log(result);
-      return true;
-    } catch (e) {
-      console.log(e);
-      await Metamask.sendConfirmation('alert', 'notifcation', message);
-      return false;
+  static async notify(message){
+    try{
+        await snap.request({
+            method: 'snap_notify',
+            params: {
+              type: 'inApp',
+              message: message,
+            },
+        });
+        
+        const result = await snap.request({
+            method: 'snap_notify',
+            params: {
+              type: 'native',
+              message: message,
+            },
+          });
+        return true;
     }
+    catch(e){
+        console.log("error - ")
+        console.log(e);
+        await Utils.sendConfirmation("alert", "notifcation", message);
+        return false;
+    }
+
+    
   }
 
-  static async sendConfirmation(
-    prompt: string,
-    description: string,
-    textAreaContent: string,
-  ): Promise<boolean> {
-    // turnicate strings that are too long
-    if (typeof prompt === 'string') {
-      prompt = prompt.substring(0, 40);
+  static async paymentConfirmation(amount: bigint, address: string, network: string){
+    const amount_string = ((Number(amount * BigInt(100000000) / BigInt(100000000)) / 100000000)).toFixed(8).replace(/\.?0+$/,"")
+    const confirm = await snap.request({
+      method: 'snap_dialog',
+      params: {
+        type: 'confirmation',
+        content: panel([
+          heading("Confirm Payment"),
+          divider(),
+          text("network : "+network),
+          text(`${amount_string} Aptos`),
+          text("recipent"),
+          copyable(address)
+        ])
+      }
+    })
+    return confirm
+  }
+
+  static async displayBalance(amount: bigint, address: string, network: string){
+    const amount_string = ((Number(amount * BigInt(100000000) / BigInt(100000000)) / 100000000)).toFixed(8).replace(/\.?0+$/,"")
+    const confirm = await snap.request({
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        content: panel([
+          heading("Wallet Balance"),
+          text(network),
+          divider(),
+          heading(`${amount_string} Aptos`),
+          copyable(address)
+        ])
+      }
+    })
+    return true;
+
+  }
+
+  static async sendConfirmation(prompt, description, textAreaContent){
+    if(!textAreaContent){
+        textAreaContent = ""
     }
-
-    if (typeof description === 'string') {
-      description = description.substring(0, 140);
-    }
-
-    if (typeof textAreaContent === 'string') {
-      textAreaContent = textAreaContent.substring(0, 1800);
-    }
-
-    const confirm = (await wallet.request({
-      method: 'snap_confirm',
-      params: [
-        {
-          prompt,
-          description,
-          textAreaContent,
-        },
-      ],
-    })) as boolean;
-
+    const confirm= await snap.request({
+    method: 'snap_dialog',
+    params: {
+        type: 'confirmation',
+        content: panel([
+        heading(prompt),
+        divider(),
+        text(description),
+        divider(),
+        text(textAreaContent),
+        ]),
+    },
+    });
+    
     return confirm;
-  }
+}
 }

@@ -10,7 +10,9 @@ export class NetworkRequest {
       }
     }
     const request = await fetch(url.toString());
-    return request.json();
+    const output = await request.json();
+    console.log(output)
+    return output;
   }
 
   static async postBytes(url, data: Uint8Array) {
@@ -24,7 +26,7 @@ export class NetworkRequest {
 
     const request = await fetch(url, options);
     console.log('submitted');
-    const outputJSON = request.json();
+    const outputJSON = await request.json();
     console.log(outputJSON);
     return outputJSON;
   }

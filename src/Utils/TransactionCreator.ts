@@ -8,7 +8,7 @@ import {
 import { COIN_ABIS } from '../ABI/abis';
 import { SimpleClient } from './SimpleClient';
 
-const DEFAULT_MAX_GAS_AMOUNT = BigInt(200000);
+const DEFAULT_MAX_GAS_AMOUNT = BigInt(20000);
 const DEFAULT_Txn_TIMEOUT = 20;
 
 type configObj = {
@@ -39,6 +39,10 @@ export class TransactionCreator {
       [HexAddress, amount],
     );
     return payload;
+  }
+
+  static buildRemotePayload(){
+    
   }
 
   static buildTransferPayload(

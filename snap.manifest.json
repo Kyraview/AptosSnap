@@ -7,7 +7,7 @@
     "url": "https://github.com/Kyraview/AptosSnap.git"
   },
   "source": {
-    "shasum": "sz194T4pnA4tfBpdnUtm2HAg6IUuhADsZFEhUpNtREw=",
+    "shasum": "EdBbB8sQkpTMqZERs/ALOPUiZ95Mjtz6iMPHhhIN0wE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -18,13 +18,17 @@
     }
   },
   "initialPermissions": {
-    "snap_confirm": {},
+    "snap_dialog": {},
     "endowment:network-access": {},
     "snap_getBip44Entropy": [
       {
         "coinType": 637
       }
-    ]
+    ],
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    }
   },
   "manifestVersion": "0.1"
 }
